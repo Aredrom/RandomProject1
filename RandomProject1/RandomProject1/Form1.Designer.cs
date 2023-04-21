@@ -58,6 +58,7 @@
             GetCountriesBtn.TabIndex = 2;
             GetCountriesBtn.Text = "Show";
             GetCountriesBtn.UseVisualStyleBackColor = true;
+            GetCountriesBtn.Click += GetCountriesBtn_Click;
             // 
             // listBox1
             // 
