@@ -79,6 +79,7 @@ namespace RandomProject1
                 else
                 {
                     listBox1.Items.Add($"No country information found for '{country.Name}'.");
+                    listBox1.Items.Add("");
                 }
 
 
