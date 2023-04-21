@@ -78,7 +78,7 @@ namespace RandomProject1
                 }
                 else
                 {
-                    listBox1.Text = $"No country information found for '{country.Name}'.";
+                    listBox1.Items.Add($"No country information found for '{country.Name}'.");
                 }
 
 
@@ -88,11 +88,11 @@ namespace RandomProject1
             foreach (var sortedCountry in sortedCountries)
             {
                 listBox1.Items.Add($"Official name: {sortedCountry.Name.official}");
-                listBox1.Items.Add($"Capital: {sortedCountry.Capital.First()}");
-                listBox1.Items.Add($"Population: {sortedCountry.Population}");
+                listBox1.Items.Add($"Capital: {sortedCountry.Capital?.First() ?? "Unknown"}");
+                listBox1.Items.Add($"Population: {(sortedCountry.Population > 0 ? sortedCountry.Population.ToString() : "Unknown")}");
                 //listBox1.Items.Add($"Currency: {sortedCountry.CurrenciesList.Select(x => x.Value)}");
-                listBox1.Items.Add($"Subregion: {sortedCountry.Subregion}");
-                listBox1.Items.Add($"Languages: {string.Join(", ", sortedCountry.Languages.Select(x => x.Value))}");
+                listBox1.Items.Add($"Subregion: {(string.IsNullOrWhiteSpace(sortedCountry.Subregion) ? "Unknown" : sortedCountry.Subregion)}");
+                listBox1.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
                 listBox1.Items.Add("");
             }
         }
