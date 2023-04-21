@@ -31,10 +31,14 @@ namespace RandomProject1
 
             numericUpDown1.Minimum = 2;
             numericUpDown1.Maximum = 10;
+
+            labelLoading.Visible = false;
         }
 
         private async void GetCountriesBtn_Click(object sender, EventArgs e)
         {
+            labelLoading.Visible = true;
+
             listBox1.Items.Clear();
 
             var selectedContinentCode = comboBoxContinent.SelectedValue.ToString();
@@ -96,6 +100,8 @@ namespace RandomProject1
                 listBox1.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
                 listBox1.Items.Add("");
             }
+
+            labelLoading.Visible = false;
         }
     }
 }

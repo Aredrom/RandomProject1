@@ -32,6 +32,7 @@
             numericUpDown1 = new NumericUpDown();
             GetCountriesBtn = new Button();
             listBox1 = new ListBox();
+            labelLoading = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
@@ -69,11 +70,22 @@
             listBox1.Size = new Size(565, 424);
             listBox1.TabIndex = 3;
             // 
+            // labelLoading
+            // 
+            labelLoading.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            labelLoading.Location = new Point(31, 247);
+            labelLoading.Name = "labelLoading";
+            labelLoading.Size = new Size(126, 39);
+            labelLoading.TabIndex = 4;
+            labelLoading.Text = "Loading...";
+            labelLoading.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(labelLoading);
             Controls.Add(listBox1);
             Controls.Add(GetCountriesBtn);
             Controls.Add(numericUpDown1);
@@ -90,5 +102,6 @@
         private NumericUpDown numericUpDown1;
         private Button GetCountriesBtn;
         private ListBox listBox1;
+        private Label labelLoading;
     }
 }
