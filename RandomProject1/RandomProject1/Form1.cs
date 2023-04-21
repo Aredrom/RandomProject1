@@ -87,7 +87,7 @@ namespace RandomProject1
                     listBox1.Items.Add($"Population: {sortedCountry.Population}");
                     listBox1.Items.Add($"Currency: {sortedCountry.Currency}");
                     listBox1.Items.Add($"Subregion: {sortedCountry.Subregion}");
-                    listBox1.Items.Add($"Languages: {sortedCountry.Languages}");
+                    listBox1.Items.Add($"Languages: {string.Join(", ", sortedCountry.Languages.Select(x => x.Value))}");
                     listBox1.Items.Add("");
                 }
             }
