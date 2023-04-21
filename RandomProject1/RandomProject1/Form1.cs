@@ -59,12 +59,12 @@ namespace RandomProject1
 
             var random = new Random();
             var selectedCountries = countries.OrderBy(x => random.Next()).Take((int)numericUpDown1.Value);
+            var allCountryInfo = new List<CountryInfo>();
 
             foreach (var country in selectedCountries)
             {
                 string countryName = country.Name;
                 string apiUrl = $"https://restcountries.com/v3.1/name/{countryName}";
-                var allCountryInfo = new List<CountryInfo>();
 
                 var apiClient = new HttpClient();
                 var apiResponse = await apiClient.GetAsync(apiUrl);
@@ -81,17 +81,19 @@ namespace RandomProject1
                     listBox1.Text = $"No country information found for '{country.Name}'.";
                 }
 
-                var sortedCountries = allCountryInfo.OrderByDescending(x => x.Name.official);
-                foreach (var sortedCountry in sortedCountries)
-                {
-                    listBox1.Items.Add($"Official name: {sortedCountry.Name.official}");
-                    listBox1.Items.Add($"Capital: {sortedCountry.Capital.First()}");
-                    listBox1.Items.Add($"Population: {sortedCountry.Population}");
-                    listBox1.Items.Add($"Currency: {sortedCountry.Currency.First()}");
-                    listBox1.Items.Add($"Subregion: {sortedCountry.Subregion}");
-                    listBox1.Items.Add($"Languages: {string.Join(", ", sortedCountry.Languages.Select(x => x.Value))}");
-                    listBox1.Items.Add("");
-                }
+
+            }
+
+            var sortedCountries = allCountryInfo.OrderBy(x => x.Name.official);
+            foreach (var sortedCountry in sortedCountries)
+            {
+                listBox1.Items.Add($"Official name: {sortedCountry.Name.official}");
+                listBox1.Items.Add($"Capital: {sortedCountry.Capital.First()}");
+                listBox1.Items.Add($"Population: {sortedCountry.Population}");
+                //listBox1.Items.Add($"Currency: {sortedCountry.CurrenciesList.Select(x => x.Value)}");
+                listBox1.Items.Add($"Subregion: {sortedCountry.Subregion}");
+                listBox1.Items.Add($"Languages: {string.Join(", ", sortedCountry.Languages.Select(x => x.Value))}");
+                listBox1.Items.Add("");
             }
         }
     }
