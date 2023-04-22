@@ -1,6 +1,7 @@
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
+using Newtonsoft.Json.Linq;
 using RandomProject1.Models;
 using System.Net.Http.Json;
 using static RandomProject1.Models.GraphQLContinentsResponse;
@@ -64,13 +65,13 @@ namespace RandomProject1
             var random = new Random();
             var selectedCountries = countries.OrderBy(x => random.Next()).Take((int)numericUpDown1.Value);
             var allCountryInfo = new List<CountryInfo>();
+            var apiClient = new HttpClient();
 
             foreach (var country in selectedCountries)
             {
                 string countryName = country.Name;
                 string apiUrl = $"https://restcountries.com/v3.1/name/{countryName}";
 
-                var apiClient = new HttpClient();
                 var apiResponse = await apiClient.GetAsync(apiUrl);
                 if (apiResponse.IsSuccessStatusCode)
                 {
@@ -95,7 +96,7 @@ namespace RandomProject1
                 listBox1.Items.Add($"Official name: {sortedCountry.Name.official}");
                 listBox1.Items.Add($"Capital: {sortedCountry.Capital?.First() ?? "Unknown"}");
                 listBox1.Items.Add($"Population: {(sortedCountry.Population > 0 ? sortedCountry.Population.ToString() : "Unknown")}");
-                //listBox1.Items.Add($"Currency: {sortedCountry.CurrenciesList.Select(x => x.Value)}");
+                listBox1.Items.Add($"Currency: {(sortedCountry.Currencies?.Any() == true ? string.Join(", ", sortedCountry.Currencies.Select(x => x.Value.Name)) : "Unknown")}");
                 listBox1.Items.Add($"Subregion: {(string.IsNullOrWhiteSpace(sortedCountry.Subregion) ? "Unknown" : sortedCountry.Subregion)}");
                 listBox1.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
                 listBox1.Items.Add("");
