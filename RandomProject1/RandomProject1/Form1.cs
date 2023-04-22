@@ -37,11 +37,32 @@ namespace RandomProject1
         private async void GetCountriesBtn_Click(object sender, EventArgs e)
         {
             labelLoading.Visible = true;
-
             listBox1.Items.Clear();
 
             var selectedContinentCode = comboBoxContinent.SelectedValue.ToString();
+            var countries = await GetCountriesByContinentCode(selectedContinentCode);
+            var countryCodes = GetRandomCountriesByCode(countries);
+            var allCountryInfo = await GetCountryInfo(countryCodes);
+            var sortedCountries = allCountryInfo.OrderBy(x => x.Name.official);
+            if (sortedCountries.Any() == false)
+            {
+                listBox1.Items.Add($"No country information found!");
+                listBox1.Items.Add("");
+            }
+            else
+            {
+                foreach (var sortedCountry in sortedCountries)
+                {
+                    DisplayCountryInfo(listBox1, sortedCountry);
+                }
+            }
+            labelLoading.Visible = false;
+        }
 
+
+
+        private async Task<List<Country>> GetCountriesByContinentCode(string selectedContinentCode)
+        {
             var graphQLClient = new GraphQLHttpClient("https://countries.trevorblades.com/graphql", new SystemTextJsonSerializer());
 
             var graphQLRequest = new GraphQLRequest
@@ -59,46 +80,38 @@ namespace RandomProject1
             };
 
             var graphQLResponse = await graphQLClient.SendQueryAsync<ContinentResponse>(graphQLRequest);
-            var countries = graphQLResponse.Data.Continent.Countries;
+            return graphQLResponse.Data.Continent.Countries;
+        }
 
+        private string GetRandomCountriesByCode(List<Country> countries)
+        {
             var random = new Random();
             var selectedCountries = countries.OrderBy(x => random.Next()).Take((int)numericUpDown1.Value);
+            return string.Join(",", selectedCountries.Select(x => x.Code));
+        }
 
-            var allCountryInfo = new List<CountryInfo>();
-
+        private async Task<List<CountryInfo>> GetCountryInfo(string countryCodes)
+        {
             var apiClient = new HttpClient();
-
-            var countryCodes = string.Join(",", selectedCountries.Select(x => x.Code));
-
             var apiUrl = $"https://restcountries.com/v3.1/alpha?codes={countryCodes}";
-
             var apiResponse = await apiClient.GetAsync(apiUrl);
-
             if (apiResponse.IsSuccessStatusCode)
             {
                 var content = await apiResponse.Content.ReadFromJsonAsync<List<CountryInfo>>();
-                allCountryInfo.AddRange(content);
-                
+                return content;
             }
-            else
-            {
-                listBox1.Items.Add($"No country information found!");
-                listBox1.Items.Add("");
-            }
+            return null;
+        }
 
-            var sortedCountries = allCountryInfo.OrderBy(x => x.Name.official);
-            foreach (var sortedCountry in sortedCountries)
-            {
-                listBox1.Items.Add($"Official name: {sortedCountry.Name.official}");
-                listBox1.Items.Add($"Capital: {sortedCountry.Capital?.First() ?? "Unknown"}");
-                listBox1.Items.Add($"Population: {(sortedCountry.Population > 0 ? sortedCountry.Population.ToString() : "Unknown")}");
-                listBox1.Items.Add($"Currency: {(sortedCountry.Currencies?.Any() == true ? string.Join(", ", sortedCountry.Currencies.Select(x => x.Value.Name)) : "Unknown")}");
-                listBox1.Items.Add($"Subregion: {(string.IsNullOrWhiteSpace(sortedCountry.Subregion) ? "Unknown" : sortedCountry.Subregion)}");
-                listBox1.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
-                listBox1.Items.Add("");
-            }
-
-            labelLoading.Visible = false;
+        private void DisplayCountryInfo(ListBox listBox, CountryInfo sortedCountry)
+        {
+            listBox.Items.Add($"Official name: {sortedCountry.Name.official}");
+            listBox.Items.Add($"Capital: {sortedCountry.Capital?.First() ?? "Unknown"}");
+            listBox.Items.Add($"Population: {(sortedCountry.Population > 0 ? sortedCountry.Population.ToString() : "Unknown")}");
+            listBox.Items.Add($"Currency: {(sortedCountry.Currencies?.Any() == true ? string.Join(", ", sortedCountry.Currencies.Select(x => x.Value.Name)) : "Unknown")}");
+            listBox.Items.Add($"Subregion: {(string.IsNullOrWhiteSpace(sortedCountry.Subregion) ? "Unknown" : sortedCountry.Subregion)}");
+            listBox.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
+            listBox.Items.Add("");
         }
     }
 }

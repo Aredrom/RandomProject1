@@ -7,5 +7,3 @@
 7. Choose continent
 8. Choose how many countries you want to display
 9. Press show button
-
-*Note - I had trouble with displaying currency and dont have enought time to fix this problem, thats why currency is not displayed 
