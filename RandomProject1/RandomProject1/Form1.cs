@@ -107,7 +107,7 @@ namespace RandomProject1
         {
             listBox.Items.Add($"Official name: {sortedCountry.Name.official}");
             listBox.Items.Add($"Capital: {sortedCountry.Capital?.First() ?? "Unknown"}");
-            listBox.Items.Add($"Population: {(sortedCountry.Population > 0 ? sortedCountry.Population.ToString() : "Unknown")}");
+            listBox.Items.Add($"Population: {(sortedCountry.Population >= 0 ? sortedCountry.Population.ToString() : "Unknown")}");
             listBox.Items.Add($"Currency: {(sortedCountry.Currencies?.Any() == true ? string.Join(", ", sortedCountry.Currencies.Select(x => x.Value.Name)) : "Unknown")}");
             listBox.Items.Add($"Subregion: {(string.IsNullOrWhiteSpace(sortedCountry.Subregion) ? "Unknown" : sortedCountry.Subregion)}");
             listBox.Items.Add($"Languages: {(sortedCountry.Languages?.Any() == true ? string.Join(", ", sortedCountry.Languages.Select(x => x.Value)) : "Unknown")}");
