@@ -1,4 +1,4 @@
-﻿namespace RandomProject1.Models
+﻿namespace RandomProject1.RestApiConsumer
 {
     public class Currencies
     {

@@ -1,11 +1,9 @@
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
-using Newtonsoft.Json.Linq;
-using RandomProject1.Models;
 using System.Net.Http.Json;
-using static RandomProject1.Models.GraphQLContinentsResponse;
-using static RandomProject1.Models.RestApiResponse;
+using RandomProject1.GrapQLConsumer;
+using RandomProject1.RestApiConsumer;
 
 namespace RandomProject1
 {
@@ -53,6 +51,7 @@ namespace RandomProject1
                     continent(code: $continentCode) {
                         countries {
                             name
+                            code
                         }
                     }
                 }",
@@ -64,30 +63,27 @@ namespace RandomProject1
 
             var random = new Random();
             var selectedCountries = countries.OrderBy(x => random.Next()).Take((int)numericUpDown1.Value);
+
             var allCountryInfo = new List<CountryInfo>();
+
             var apiClient = new HttpClient();
 
-            foreach (var country in selectedCountries)
+            var countryCodes = string.Join(",", selectedCountries.Select(x => x.Code));
+
+            var apiUrl = $"https://restcountries.com/v3.1/alpha?codes={countryCodes}";
+
+            var apiResponse = await apiClient.GetAsync(apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
             {
-                string countryName = country.Name;
-                string apiUrl = $"https://restcountries.com/v3.1/name/{countryName}";
-
-                var apiResponse = await apiClient.GetAsync(apiUrl);
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    var content = await apiResponse.Content.ReadFromJsonAsync<List<CountryInfo>>();
-                    foreach (var data in content)
-                    {
-                        allCountryInfo.Add(data);
-                    }
-                }
-                else
-                {
-                    listBox1.Items.Add($"No country information found for '{country.Name}'.");
-                    listBox1.Items.Add("");
-                }
-
-
+                var content = await apiResponse.Content.ReadFromJsonAsync<List<CountryInfo>>();
+                allCountryInfo.AddRange(content);
+                
+            }
+            else
+            {
+                listBox1.Items.Add($"No country information found!");
+                listBox1.Items.Add("");
             }
 
             var sortedCountries = allCountryInfo.OrderBy(x => x.Name.official);
